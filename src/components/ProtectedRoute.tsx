@@ -10,29 +10,38 @@ const ProtectedRoute = () => {
 
   useEffect(() => {
     const checkAuth = async () => {
-      const { data: { session } } = await supabase.auth.getSession();
-      setSession(session);
-      
-      if (session?.user) {
-        const { data: profile, error } = await supabase
-          .from('profiles')
-          .select('role')
-          .eq('id', session.user.id)
-          .single();
+      try {
+        const { data: { session } } = await supabase.auth.getSession();
+        setSession(session);
+        
+        if (session?.user) {
+          const { data: profile, error } = await supabase
+            .from('profiles')
+            .select('role')
+            .eq('id', session.user.id)
+            .single();
 
-        if (profile && profile.role === 'admin') {
-          setIsAdmin(true); 
-        } else {
-          setIsAdmin(false); 
+          if (error) {
+            console.error("Profile check error:", error.message);
+          }
+
+          if (profile && profile.role === 'admin') {
+            setIsAdmin(true); 
+          } else {
+            setIsAdmin(false); 
+          }
         }
+      } catch (err) {
+        console.error("Auth error:", err);
+      } finally {
+        setLoading(false);
       }
-      setLoading(false);
     };
 
     checkAuth();
 
     const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, session) => {
-      if (_event === 'SIGNED_IN' || _event === 'SIGNED_OUT') {
+      if (_event === 'INITIAL_SESSION' || _event === 'SIGNED_IN' || _event === 'SIGNED_OUT') {
         checkAuth();
       }
     });
@@ -45,7 +54,7 @@ const ProtectedRoute = () => {
   if (!session) return <Navigate to="/admin/login" replace />;
 
   if (!isAdmin) {
-    toast.error("Access Denied: Admin privileges required.");
+    toast.error("Access Denied: You do not have admin privileges.");
     return <Navigate to="/" replace />; 
   }
 
