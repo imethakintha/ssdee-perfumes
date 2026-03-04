@@ -20,8 +20,7 @@ const perfumeSamples = [
 const Index = () => {
   return (
     <div className="min-h-screen bg-background overflow-x-hidden selection:bg-primary/30 pt-20 md:pt-24">
-      
-      {/* 2. Hero Section - mb-12 වෙනුවට mb-4 කරලා යටින් පොඩි ඉඩක් ඉතුරු කළා Scroll Indicator එකට */}
+
       <section className="relative h-[calc(100dvh-10rem)] md:h-[calc(100dvh-12rem)] flex items-center justify-center overflow-hidden mx-2 md:mx-6 mb-4 rounded-[2rem] md:rounded-[3rem] border border-white/5 shadow-2xl">
         
         {/* Background Video */}
@@ -85,7 +84,6 @@ const Index = () => {
         </div>
       </section>
 
-      {/* 3. Cinematic Scroll Indicator - දැන් Video Box එකෙන් එලියට ගත්තා! */}
       <motion.div
         className="flex flex-col items-center gap-3 w-full pb-8 pt-4 z-10"
         animate={{ y: [0, 10, 0] }}
@@ -109,7 +107,7 @@ const Index = () => {
             animate={{ x: ["0%", "-50%"] }}
             transition={{ repeat: Infinity, ease: "linear", duration: 25 }}
           >
-            {/* Array එක දෙපාරක් map කරනවා infinite loop එක සුමටව පේන්න */}
+
             {[...perfumeSamples, ...perfumeSamples].map((src, index) => (
               <div key={index} className="w-32 md:w-48 aspect-[3/4] relative group cursor-pointer shrink-0">
                 <div className="absolute inset-0 bg-primary/20 blur-2xl rounded-full opacity-0 group-hover:opacity-100 transition-opacity duration-700" />

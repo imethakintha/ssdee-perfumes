@@ -19,7 +19,6 @@ const AdminUsers = () => {
   const [loading, setLoading] = useState(true);
   const [inviting, setInviting] = useState(false);
 
-  // Admin ලාගේ ලැයිස්තුව ලබා ගැනීම
   const fetchAdmins = async () => {
     setLoading(true);
     const { data, error } = await supabase
@@ -28,7 +27,7 @@ const AdminUsers = () => {
       .eq('role', 'admin');
 
     if (error) {
-      toast.error("Admin ලැයිස්තුව ලබාගත නොහැකි විය");
+      toast.error("Admin list could not be retrieved");
     } else {
       setAdmins(data || []);
     }
@@ -39,19 +38,16 @@ const AdminUsers = () => {
     fetchAdmins();
   }, []);
 
-  // අලුත් Admin කෙනෙක්ට Invite එකක් යැවීම (Email එකට link එකක් යයි)
   const inviteAdmin = async () => {
     if (!email.trim()) return;
     setInviting(true);
     
-    // සටහන: Frontend එකෙන් සෘජුවම invite කිරීම සඳහා Supabase Admin Auth අවශ්‍ය වේ.
-    // සරල ක්‍රමය ලෙස අපි email එකට confirmation එකක් යවන ලෙස සකසමු.
     const { error } = await supabase.auth.admin.inviteUserByEmail(email);
 
     if (error) {
-      toast.error("Invite කිරීමට නොහැකි විය: " + error.message);
+      toast.error("Invite could not be sent: " + error.message);
     } else {
-      toast.success(email + " වෙත සාර්ථකව Invite එකක් යැවුවා!");
+      toast.success(email + " has been invited successfully!");
       setEmail("");
       fetchAdmins();
     }
@@ -59,15 +55,14 @@ const AdminUsers = () => {
   };
 
   const removeAdmin = async (id: string) => {
-    // සටහන: Auth user කෙනෙක්ව අයින් කිරීම Supabase dashboard එකෙන් කිරීම වඩාත් ආරක්ෂිතයි.
-    // මෙතනදී අපි profile එක ඉවත් කරමු.
+
     const { error } = await supabase.from('profiles').delete().eq('id', id);
 
     if (error) {
-      toast.error("ඉවත් කිරීමට නොහැකි විය");
+      toast.error("Delete error");
     } else {
       setAdmins(admins.filter(a => a.id !== id));
-      toast.success("Admin Profile එක ඉවත් කළා");
+      toast.success("Admin Profile deleted successfully");
     }
   };
 
@@ -81,7 +76,7 @@ const AdminUsers = () => {
         <div className="flex gap-2">
           <Input
             type="email"
-            placeholder="admin@ssdee.com"
+            placeholder="Enter email to invite..."
             value={email}
             onChange={(e) => setEmail(e.target.value)}
             className="bg-secondary border-border"
@@ -94,17 +89,17 @@ const AdminUsers = () => {
             {inviting ? <Loader2 size={16} className="animate-spin" /> : <UserPlus size={16} />}
           </Button>
         </div>
-        <p className="text-[10px] text-muted-foreground italic">* Invite කරන email එකට login link එකක් ලැබෙනු ඇත.</p>
+        <p className="text-[10px] text-muted-foreground italic">* Enter the email address of the user you want to invite as an admin.</p>
       </div>
 
       {/* Admin List */}
       <div className="border border-border rounded-sm overflow-hidden">
         {loading ? (
-          <div className="p-6 text-center text-muted-foreground">පූරණය වෙමින්...</div>
+          <div className="p-6 text-center text-muted-foreground">Loading...</div>
         ) : (
           <div className="divide-y divide-border">
             {admins.length === 0 ? (
-              <div className="p-6 text-center text-muted-foreground">තවම Admin ලා කිසිවෙකු නැත.</div>
+              <div className="p-6 text-center text-muted-foreground">There are no admins yet.</div>
             ) : (
               admins.map((admin) => (
                 <div key={admin.id} className="flex items-center justify-between p-4 hover:bg-secondary/20 transition-colors">

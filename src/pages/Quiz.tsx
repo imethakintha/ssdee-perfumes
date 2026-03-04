@@ -45,7 +45,6 @@ const Quiz = () => {
   const [recommendations, setRecommendations] = useState<any[]>([]);
   const [loading, setLoading] = useState(false);
 
-  // Database එකේ තියෙන ඔක්කොම Products කලින්ම Fetch කර ගැනීම
   useEffect(() => {
     const fetchProducts = async () => {
       const { data, error } = await supabase.from('products').select('*');
@@ -67,22 +66,19 @@ const Quiz = () => {
     }
   };
 
-  // පිළිතුරු අනුව ගැලපෙන Perfumes තේරීමේ Logic එක
   const generateRecommendations = (finalAnswers: string[]) => {
     setLoading(true);
-    const chosenFamily = finalAnswers[1]; // දෙවන ප්‍රශ්නය (Scent Family)
+    const chosenFamily = finalAnswers[1];
 
-    // Category එක අනුව filter කිරීම
     let matches = products.filter(p => 
       p.category?.toLowerCase() === chosenFamily.toLowerCase()
     );
 
-    // ගැලපෙන දේවල් නැතිනම්, සියලුම products වලින් හොඳම 2ක් පෙන්වීම
     if (matches.length === 0) {
       matches = products.slice(0, 2);
     }
 
-    setRecommendations(matches.slice(0, 3)); // උපරිම 3ක් පෙන්වමු
+    setRecommendations(matches.slice(0, 3));
     setTimeout(() => {
       setShowResults(true);
       setLoading(false);

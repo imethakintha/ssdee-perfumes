@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import { Package, Tag, Users, Activity } from "lucide-react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { supabase } from "@/lib/supabase"; // Supabase සම්බන්ධතාවය
+import { supabase } from "@/lib/supabase";
 
 const AdminHome = () => {
   const [stats, setStats] = useState({
@@ -13,8 +13,7 @@ const AdminHome = () => {
 
   const fetchStats = async () => {
     setLoading(true);
-    
-    // එකවර queries තුනක් run කර දත්ත ලබා ගැනීම
+
     const [productsRes, categoriesRes, usersRes] = await Promise.all([
       supabase.from('products').select('id', { count: 'exact', head: true }),
       supabase.from('categories').select('id', { count: 'exact', head: true }),
@@ -67,8 +66,7 @@ const AdminHome = () => {
       <div className="mt-8 p-6 border border-border rounded-sm bg-secondary/10">
         <h2 className="text-xl font-display text-foreground mb-2">Welcome Back, Admin</h2>
         <p className="text-muted-foreground text-sm">
-          මෙතැනින් ඔයාගේ **SSDee** වෙළඳසැලේ වර්තමාන තත්ත්වය සාරාංශයක් ලෙස බලාගන්න පුළුවන්. 
-          දැනට පද්ධතියේ සක්‍රීයව පවතින නිෂ්පාදන සහ වර්ගීකරණයන් ඉහතින් දැක්වෙනවා.
+          Here's what's happening with your store today. You have {stats.products} products across {stats.categories} categories, and {stats.users} admin users managing the store. Keep up the great work! 
         </p>
       </div>
     </div>

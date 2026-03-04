@@ -9,7 +9,6 @@ const Login = () => {
   const { user, signInWithGoogle } = useAuth();
   const navigate = useNavigate();
 
-  // යූසර් දැනටමත් ලොග් වෙලා නම් කෙලින්ම Shop එකට යවනවා
   useEffect(() => {
     if (user) {
       navigate("/shop");

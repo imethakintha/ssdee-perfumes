@@ -17,7 +17,6 @@ const AdminCategories = () => {
   const [editName, setEditName] = useState("");
   const [loading, setLoading] = useState(true);
 
-  // දත්ත Fetch කිරීම
   const fetchCategories = async () => {
     setLoading(true);
     const { data, error } = await supabase
@@ -26,7 +25,7 @@ const AdminCategories = () => {
       .order('name', { ascending: true });
 
     if (error) {
-      toast.error("දත්ත ලබාගැනීමට නොහැකි විය");
+      toast.error("Data could not be retrieved");
     } else {
       setCategories(data || []);
     }
@@ -37,7 +36,6 @@ const AdminCategories = () => {
     fetchCategories();
   }, []);
 
-  // අලුත් Category එකක් එකතු කිරීම
   const add = async () => {
     if (!newName.trim()) return;
     
@@ -47,15 +45,14 @@ const AdminCategories = () => {
       .select();
 
     if (error) {
-      toast.error("එකතු කිරීමට නොහැකි විය");
+      toast.error("Could not add category");
     } else {
       setCategories([...categories, data[0]]);
       setNewName("");
-      toast.success("සාර්ථකව එකතු කළා");
+      toast.success("Category added successfully");
     }
   };
 
-  // Category එකක් Edit කිරීම
   const saveEdit = async () => {
     if (!editingId || !editName.trim()) return;
 
@@ -65,15 +62,14 @@ const AdminCategories = () => {
       .eq('id', editingId);
 
     if (error) {
-      toast.error("යාවත්කාලීන කිරීමට නොහැකි විය");
+      toast.error("Could not update category");
     } else {
       setCategories(categories.map((c) => c.id === editingId ? { ...c, name: editName } : c));
       setEditingId(null);
-      toast.success("සාර්ථකව යාවත්කාලීන කළා");
+      toast.success("Category updated successfully");
     }
   };
 
-  // Category එකක් Delete කිරීම
   const remove = async (id: string) => {
     const { error } = await supabase
       .from('categories')
@@ -81,10 +77,10 @@ const AdminCategories = () => {
       .eq('id', id);
 
     if (error) {
-      toast.error("ඉවත් කිරීමට නොහැකි විය");
+      toast.error("Could not delete category");
     } else {
       setCategories(categories.filter((c) => c.id !== id));
-      toast.success("සාර්ථකව ඉවත් කළා");
+      toast.success("Category deleted successfully");
     }
   };
 

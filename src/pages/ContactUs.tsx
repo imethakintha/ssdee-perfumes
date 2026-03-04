@@ -12,7 +12,7 @@ const CONTACT_EMAIL = import.meta.env.VITE_CONTACT_EMAIL;
 
 const ContactUs = () => {
   const [loading, setLoading] = useState(false);
-  const formRef = useRef<HTMLFormElement>(null); // Form එක අල්ලා ගැනීමට Ref එකක්
+  const formRef = useRef<HTMLFormElement>(null);
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
@@ -20,7 +20,6 @@ const ContactUs = () => {
     if (!formRef.current) return;
     setLoading(true);
 
-    // EmailJS හරහා දත්ත යැවීම
     emailjs.sendForm(
       import.meta.env.VITE_EMAILJS_SERVICE_ID,
       import.meta.env.VITE_EMAILJS_TEMPLATE_ID,
@@ -114,32 +113,30 @@ const ContactUs = () => {
             initial={{ opacity: 0, x: 30 }} animate={{ opacity: 1, x: 0 }} transition={{ duration: 0.8, delay: 0.4 }}
             className="lg:col-span-3"
           >
-            {/* ref එක form එකට සම්බන්ධ කිරීම */}
             <form ref={formRef} onSubmit={handleSubmit} className="p-8 md:p-10 rounded-[2rem] bg-secondary/5 border border-border/30 space-y-6">
               <h3 className="font-display text-3xl text-gold-gradient mb-8">Send a Message</h3>
               
               <div className="grid md:grid-cols-2 gap-6">
                 <div className="space-y-2">
                   <label className="text-[10px] uppercase tracking-[0.2em] text-muted-foreground">Full Name</label>
-                  {/* name attribute එක එකතු කළා */}
+                  
                   <Input name="from_name" required placeholder="Enter Your Name" className="bg-background/50 border-border/50 h-12 rounded-xl focus:border-primary/50" />
                 </div>
                 <div className="space-y-2">
                   <label className="text-[10px] uppercase tracking-[0.2em] text-muted-foreground">Email Address</label>
-                  {/* name attribute එක එකතු කළා */}
                   <Input name="from_email" required type="email" placeholder="Enter Your Email" className="bg-background/50 border-border/50 h-12 rounded-xl focus:border-primary/50" />
                 </div>
               </div>
 
               <div className="space-y-2">
                 <label className="text-[10px] uppercase tracking-[0.2em] text-muted-foreground">Subject</label>
-                {/* name attribute එක එකතු කළා */}
+                
                 <Input name="subject" required placeholder="Order Inquiry" className="bg-background/50 border-border/50 h-12 rounded-xl focus:border-primary/50" />
               </div>
 
               <div className="space-y-2">
                 <label className="text-[10px] uppercase tracking-[0.2em] text-muted-foreground">Message</label>
-                {/* name attribute එක එකතු කළා */}
+                
                 <Textarea name="message" required placeholder="How can we help you?" className="bg-background/50 border-border/50 min-h-[150px] rounded-xl focus:border-primary/50 resize-none" />
               </div>
 

@@ -28,7 +28,6 @@ const Shop = () => {
   const [selectedProduct, setSelectedProduct] = useState<Product | null>(null);
   const [loading, setLoading] = useState(true);
 
-  // Cart Context එක ලබා ගැනීම
   const { addToCart } = useCart();
 
   const fetchData = async () => {
@@ -61,7 +60,6 @@ const Shop = () => {
     return matchCat && matchSearch;
   });
 
-  // තනි භාණ්ඩයක් සඳහා WhatsApp Order කිරීම
   const orderWhatsApp = (name: string) => {
     const msg = encodeURIComponent(`Hi, I'm interested in ordering "${name}" from SSDee.`);
     window.open(`https://wa.me/${WHATSAPP_NUMBER || "+94714009568"}?text=${msg}`, "_blank");
@@ -156,7 +154,6 @@ const Shop = () => {
                     <div className="mt-auto pt-3 border-t border-border/30 flex items-center justify-between">
                       <span className="text-foreground font-semibold text-xs md:text-lg">Rs {product.price.toLocaleString()}</span>
 
-                      {/* මෙතන තියෙන්නේ පිටත පේන "Add to Cart" Button එක පමණයි */}
                       <Button
                         size="sm"
                         className="h-7 md:h-10 px-2 md:px-4 bg-primary/10 hover:bg-primary text-primary hover:text-primary-foreground border border-primary/20 transition-all duration-300 rounded-lg md:rounded-xl group/btn"
@@ -224,13 +221,13 @@ const Shop = () => {
                     <span className="text-foreground font-bold text-xl md:text-3xl">Rs {selectedProduct.price.toLocaleString()}</span>
                   </div>
 
-                  {/* Modal එක ඇතුළත Buttons දෙක (Add to Cart සහ Order via WhatsApp) */}
+
                   <div className="flex items-center gap-2 md:gap-3 w-full overflow-hidden">
 
                     {/* Add to Cart Button */}
                     <Button
                       variant="outline"
-                      // w-12 h-12 මගින් Phone එකේදී මේක නියම සමචතුරස්‍රයක් බවට පත් කරයි
+
                       className="w-12 h-12 md:w-auto md:h-14 flex-shrink-0 border-primary/30 text-primary hover:bg-primary/10 rounded-xl md:rounded-2xl p-0 md:px-6"
                       onClick={() => {
                         addToCart(selectedProduct);
@@ -242,12 +239,12 @@ const Shop = () => {
 
                     {/* Order via WhatsApp Button */}
                     <Button
-                      // flex-1 මගින් ඉතුරු ඉඩ සම්පූර්ණයෙන්ම ගනී
+
                       className="flex-1 h-12 md:h-14 bg-gold-gradient text-primary-foreground hover:scale-[1.02] active:scale-[0.98] transition-all rounded-xl md:rounded-2xl shadow-[0_0_30px_rgba(212,175,55,0.2)] px-2 md:px-6 min-w-0"
                       onClick={() => orderWhatsApp(selectedProduct.name)}
                     >
                       <MessageCircle size={18} className="mr-1.5 md:mr-3 shrink-0" />
-                      {/* truncate මගින් අකුරු එලියට පැනීම සම්පූර්ණයෙන්ම නතර කරයි */}
+
                       <span className="tracking-widest md:tracking-[0.2em] uppercase text-[9px] min-[375px]:text-[10px] md:text-xs font-bold truncate">
                         Order via WhatsApp
                       </span>

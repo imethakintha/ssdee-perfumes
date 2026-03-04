@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { Link, Outlet, useLocation, useNavigate } from "react-router-dom";
-import { Package, Tag, Users, LayoutDashboard, LogOut, Menu, Home, ShoppingBag } from "lucide-react"; // Home සහ ShoppingBag අයිකන එක් කළා
+import { Package, Tag, Users, LayoutDashboard, LogOut, Menu, Home, ShoppingBag, ShieldAlert } from "lucide-react"; // Home සහ ShoppingBag අයිකන එක් කළා
 import { Button } from "@/components/ui/button";
 import { supabase } from "@/lib/supabase"; //
 import { toast } from "sonner"; //
@@ -10,10 +10,10 @@ const sidebarLinks = [
   { to: "/admin", label: "Dashboard", icon: LayoutDashboard, exact: true },
   { to: "/admin/products", label: "Products", icon: Package },
   { to: "/admin/categories", label: "Categories", icon: Tag },
-  { to: "/admin/users", label: "Admin Users", icon: Users },
+  { to: "/admin/customers", label: "Customers", icon: Users },
+  { to: "/admin/users", label: "Admin Users", icon: ShieldAlert },
 ];
 
-// පාරිභෝගිකයන්ට පෙනෙන පිටු සඳහා ලින්ක්ස්
 const publicLinks = [
   { to: "/", label: "Home Page", icon: Home },
   { to: "/shop", label: "Shop Page", icon: ShoppingBag },
@@ -28,7 +28,7 @@ const AdminDashboard = () => {
     const { error } = await supabase.auth.signOut();
     if (error) toast.error("Logout Error: " + error.message);
     else {
-      toast.success("සාර්ථකව Logout වුණා!");
+      toast.success("Logged out successfully!");
       navigate("/admin/login");
     }
   };
@@ -57,7 +57,6 @@ const AdminDashboard = () => {
         );
       })}
 
-      {/* Storefront Section - මෙන්න අලුතින් එක් කළ කොටස */}
       <p className="px-3 text-[10px] uppercase tracking-[0.2em] text-muted-foreground/50 mb-2 mt-6">Storefront</p>
       {publicLinks.map((link) => (
         <Link

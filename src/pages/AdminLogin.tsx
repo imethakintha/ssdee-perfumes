@@ -1,11 +1,11 @@
 import { useState } from "react";
-import { useNavigate } from "react-router-dom"; // Redirect සඳහා
+import { useNavigate } from "react-router-dom";
 import { motion } from "framer-motion";
 import { Shield, LogIn } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { supabase } from "@/lib/supabase"; // Supabase client එක import කරන්න
+import { supabase } from "@/lib/supabase";
 import { toast } from "sonner";
 
 const AdminLogin = () => {
@@ -27,7 +27,7 @@ const AdminLogin = () => {
       toast.error("Login failed: " + error.message);
     } else {
       toast.success("Login Success!");
-      navigate("/admin"); // Dashboard එකට යවන්න
+      navigate("/admin");
     }
     setLoading(false);
   };

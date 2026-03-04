@@ -28,7 +28,7 @@ interface Category {
 
 const AdminProducts = () => {
   const [products, setProducts] = useState<Product[]>([]);
-  const [categories, setCategories] = useState<Category[]>([]); // Categories සඳහා state එකක්
+  const [categories, setCategories] = useState<Category[]>([]);
   const [search, setSearch] = useState("");
   const [dialogOpen, setDialogOpen] = useState(false);
   const [editing, setEditing] = useState<Product | null>(null);
@@ -39,16 +39,15 @@ const AdminProducts = () => {
 
   const fetchData = async () => {
     setLoading(true);
-    // Products සහ Categories දෙකම fetch කිරීම
     const [prodRes, catRes] = await Promise.all([
       supabase.from('products').select('*'),
       supabase.from('categories').select('*').order('name', { ascending: true })
     ]);
 
-    if (prodRes.error) toast.error("Products ලබාගැනීමට නොහැකි විය");
+    if (prodRes.error) toast.error("Products could not be retrieved");
     else setProducts(prodRes.data || []);
 
-    if (catRes.error) toast.error("Categories ලබාගැනීමට නොහැකි විය");
+    if (catRes.error) toast.error("Categories could not be retrieved");
     else setCategories(catRes.data || []);
 
     setLoading(false);
@@ -78,7 +77,7 @@ const AdminProducts = () => {
 
   const save = async () => {
     if (!form.name || !form.price || !form.category) {
-      toast.error("කරුණාකර නම, මිල සහ category එක ඇතුළත් කරන්න");
+      toast.error("Please fill in all required fields");
       return;
     }
 
@@ -101,17 +100,17 @@ const AdminProducts = () => {
       if (editing) {
         const { error } = await supabase.from('products').update(productData).eq('id', editing.id);
         if (error) throw error;
-        toast.success("සාර්ථකව යාවත්කාලීන කළා");
+        toast.success("Product updated successfully");
       } else {
         const { error } = await supabase.from('products').insert([productData]);
         if (error) throw error;
-        toast.success("සාර්ථකව එකතු කළා");
+        toast.success("Product added successfully");
       }
 
       setDialogOpen(false);
       fetchData();
     } catch (error: any) {
-      toast.error("වැරදීමක් සිදු වුණා: " + error.message);
+      toast.error("An error occurred: " + error.message);
     } finally {
       setUploading(false);
     }
@@ -136,7 +135,7 @@ const AdminProducts = () => {
     if (error) toast.error("Delete error");
     else {
       setProducts(products.filter((p) => p.id !== id));
-      toast.success("සාර්ථකව ඉවත් කළා");
+      toast.success("Product deleted successfully");
     }
   };
 
@@ -144,7 +143,6 @@ const AdminProducts = () => {
 
   return (
     <div>
-      {/* Table UI එක කලින් වගේමයි... */}
       <div className="flex items-center justify-between mb-6">
         <h1 className="font-display text-3xl text-gold-gradient">Products</h1>
         <Button onClick={openAdd} className="bg-gold-gradient text-primary-foreground hover:opacity-90 text-xs tracking-widest uppercase">
@@ -222,7 +220,6 @@ const AdminProducts = () => {
                 <Input type="number" value={form.price} onChange={(e) => setForm({ ...form, price: e.target.value })} className="bg-secondary border-border" />
               </div>
 
-              {/* මෙතන තමයි වැදගත්ම වෙනස - Dropdown එකක් ඇතුළත් කිරීම */}
               <div className="space-y-1">
                 <Label className="text-xs text-muted-foreground tracking-widest uppercase">Category</Label>
                 <Select 

@@ -1,32 +1,55 @@
 import { useEffect, useState } from "react";
 import { Navigate, Outlet } from "react-router-dom";
 import { supabase } from "@/lib/supabase";
+import { toast } from "sonner";
 
 const ProtectedRoute = () => {
   const [session, setSession] = useState<any>(null);
   const [loading, setLoading] = useState(true);
+  const [isAdmin, setIsAdmin] = useState(false);
 
   useEffect(() => {
-    // දැනට තියෙන session එක check කිරීම
-    supabase.auth.getSession().then(({ data: { session } }) => {
+    const checkAuth = async () => {
+      const { data: { session } } = await supabase.auth.getSession();
       setSession(session);
-      setLoading(false);
-    });
+      
+      if (session?.user) {
+        const { data: profile, error } = await supabase
+          .from('profiles')
+          .select('role')
+          .eq('id', session.user.id)
+          .single();
 
-    // Session එක වෙනස් වෙනවද කියලා බැලීම
+        if (profile && profile.role === 'admin') {
+          setIsAdmin(true); 
+        } else {
+          setIsAdmin(false); 
+        }
+      }
+      setLoading(false);
+    };
+
+    checkAuth();
+
     const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, session) => {
-      setSession(session);
+      if (_event === 'SIGNED_IN' || _event === 'SIGNED_OUT') {
+        checkAuth();
+      }
     });
 
     return () => subscription.unsubscribe();
   }, []);
 
-  if (loading) return <div className="min-h-screen flex items-center justify-center">පරීක්ෂා කරමින්...</div>;
+  if (loading) return <div className="min-h-screen flex items-center justify-center text-primary tracking-widest text-sm uppercase">Verifying Access...</div>;
 
-  // Session එකක් නැතිනම් Login page එකට යවන්න
   if (!session) return <Navigate to="/admin/login" replace />;
 
-  return <Outlet />; // Session එක තියේ නම් ඇතුළට යන්න දෙන්න
+  if (!isAdmin) {
+    toast.error("Access Denied: Admin privileges required.");
+    return <Navigate to="/" replace />; 
+  }
+
+  return <Outlet />; 
 };
 
 export default ProtectedRoute;
