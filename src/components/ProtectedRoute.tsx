@@ -15,17 +15,12 @@ const ProtectedRoute = () => {
         setSession(session);
         
         if (session?.user) {
-          const { data: profile, error } = await supabase
-            .from('profiles')
-            .select('role')
-            .eq('id', session.user.id)
-            .single();
+          const adminEmailsString = import.meta.env.VITE_ADMIN_EMAILS || "admin@ssdee.com";
+          const allowedAdmins = adminEmailsString.split(',').map((e: string) => e.trim().toLowerCase());
 
-          if (error) {
-            console.error("Profile check error:", error.message);
-          }
+          const userEmail = session.user.email?.toLowerCase() || "";
 
-          if (profile && profile.role === 'admin') {
+          if (allowedAdmins.includes(userEmail)) {
             setIsAdmin(true); 
           } else {
             setIsAdmin(false); 

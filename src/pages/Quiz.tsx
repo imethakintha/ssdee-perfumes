@@ -2,10 +2,9 @@ import { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { ArrowLeft, RotateCcw, MessageCircle, Loader2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { supabase } from "@/lib/supabase"; // Supabase සම්බන්ධතාවය
+import { supabase } from "@/lib/supabase";
 import { toast } from "sonner";
 
-// ප්‍රශ්න මාලාව
 const questions = [
   {
     question: "What's the occasion?",
@@ -48,7 +47,7 @@ const Quiz = () => {
   useEffect(() => {
     const fetchProducts = async () => {
       const { data, error } = await supabase.from('products').select('*');
-      if (error) toast.error("දත්ත ලබාගැනීම අසාර්ථකයි");
+      if (error) toast.error("Failed to fetch data");
       else setProducts(data || []);
     };
     fetchProducts();

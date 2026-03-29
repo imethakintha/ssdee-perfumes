@@ -21,12 +21,11 @@ const Navbar = () => {
   const { user, signInWithGoogle, signOut } = useAuth();
   const { items, removeFromCart, updateQuantity, total } = useCart();
 
-  // මුළු Cart එකම එකම WhatsApp මැසේජ් එකක් විදියට යවන Function එක
   const checkoutWhatsApp = () => {
     if (items.length === 0) return;
     let text = "Hello SSDee, I would like to place an order:%0A%0A";
     items.forEach(item => {
-      text += `- ${item.name} (x${item.quantity}) : Rs ${(item.price * item.quantity).toLocaleString()}%0A`;
+      text += `🔹 *${item.name}* (x${item.quantity}) - Rs ${(item.price * item.quantity).toLocaleString()}%0A`;
     });
     text += `%0A*Total: Rs ${total.toLocaleString()}*%0A%0APlease confirm my order.`;
     window.open(`https://wa.me/${WHATSAPP_NUMBER || "+94714009568"}?text=${text}`, "_blank");
@@ -37,14 +36,10 @@ const Navbar = () => {
       <nav className="fixed top-0 left-0 right-0 z-40 glass-dark border-b border-border/40 backdrop-blur-xl">
         <div className="container mx-auto flex items-center justify-between h-16 md:h-20 px-4 relative">
 
-          {/* Logo Section - Floating Method */}
+          {/* Logo Section */}
           <div className="flex-shrink-0 relative h-full flex items-center z-50">
             <Link to="/" className="flex items-center h-full transition-transform duration-300 hover:scale-110">
-              <img
-                src="/Logo.svg"
-                alt="SSDee Logo"
-                className="max-h-full w-auto object-contain"
-              />
+              <img src="/Logo.svg" alt="SSDee Logo" className="max-h-full w-auto object-contain" />
             </Link>
           </div>
 
@@ -54,8 +49,7 @@ const Navbar = () => {
               <Link
                 key={link.to}
                 to={link.to}
-                className={`text-[11px] font-medium tracking-[0.2em] uppercase transition-colors duration-300 ${location.pathname === link.to ? "text-primary" : "text-muted-foreground hover:text-primary"
-                  }`}
+                className={`text-[11px] font-medium tracking-[0.2em] uppercase transition-colors duration-300 ${location.pathname === link.to ? "text-primary" : "text-muted-foreground hover:text-primary"}`}
               >
                 {link.label}
               </Link>
@@ -101,7 +95,7 @@ const Navbar = () => {
           </div>
         </div>
 
-        {/* Mobile Menu (පහසුකම් සඳහා) */}
+        {/* Mobile Menu */}
         <AnimatePresence>
           {mobileOpen && (
             <motion.div initial={{ height: 0, opacity: 0 }} animate={{ height: "auto", opacity: 1 }} exit={{ height: 0, opacity: 0 }} className="md:hidden bg-background border-b border-border overflow-hidden">
@@ -152,8 +146,6 @@ const Navbar = () => {
                 {items.length === 0 ? (
                   <div className="h-full flex flex-col items-center justify-center text-muted-foreground opacity-80">
                     <ShoppingCart size={64} className="mb-6 opacity-50" />
-
-                    {/* User Login වෙලා නැත්නම් Login වෙන්න කියනවා */}
                     {!user ? (
                       <>
                         <p className="tracking-[0.2em] uppercase text-xs mb-6 text-center leading-relaxed">
@@ -170,26 +162,43 @@ const Navbar = () => {
                     )}
                   </div>
                 ) : (
-                  items.map((item) => (
-                    <div key={item.id} className="flex gap-4 items-center bg-secondary/20 p-3 rounded-2xl border border-border/30">
-                      <img src={item.image_url} alt={item.name} className="w-20 h-24 object-cover rounded-xl border border-border/50" />
-                      <div className="flex-1">
-                        <h4 className="font-display text-lg text-foreground mb-1">{item.name}</h4>
-                        <p className="text-primary font-bold text-sm mb-3">Rs {item.price.toLocaleString()}</p>
+                  items.map((item) => {
+                    const nameParts = item.name.split(' - ');
+                    const baseName = nameParts[0];
+                    const sizePart = nameParts[1];
 
-                        <div className="flex items-center gap-3">
-                          <div className="flex items-center border border-border/50 rounded-lg overflow-hidden bg-background">
-                            <button onClick={() => updateQuantity(item.id, item.quantity - 1)} className="p-1.5 hover:bg-secondary text-muted-foreground hover:text-foreground transition-colors"><Minus size={14} /></button>
-                            <span className="w-8 text-center text-xs font-bold">{item.quantity}</span>
-                            <button onClick={() => updateQuantity(item.id, item.quantity + 1)} className="p-1.5 hover:bg-secondary text-muted-foreground hover:text-foreground transition-colors"><Plus size={14} /></button>
+                    return (
+                      <div key={item.id} className="flex gap-4 items-center bg-secondary/20 p-3 rounded-2xl border border-border/30">
+                        <img src={item.image_url} alt={baseName} className="w-20 h-24 object-cover rounded-xl border border-border/50" />
+                        <div className="flex-1">
+                          
+                          <h4 className="font-display text-lg text-foreground leading-tight mb-1 pr-6">{baseName}</h4>
+                          
+                          {sizePart && (
+                            <div className="mb-2">
+                              <span className="inline-block px-1.5 py-0.5 bg-primary/10 border border-primary/20 rounded text-[9px] uppercase tracking-widest text-primary">
+                                {sizePart}
+                              </span>
+                            </div>
+                          )}
+
+                          <p className="text-primary font-bold text-sm mb-3">Rs {item.price.toLocaleString()}</p>
+
+                          <div className="flex items-center gap-3">
+                            <div className="flex items-center border border-border/50 rounded-lg overflow-hidden bg-background">
+                              <button onClick={() => updateQuantity(item.id, item.quantity - 1)} className="p-1.5 hover:bg-secondary text-muted-foreground hover:text-foreground transition-colors"><Minus size={14} /></button>
+                              <span className="w-8 text-center text-xs font-bold">{item.quantity}</span>
+                              <button onClick={() => updateQuantity(item.id, item.quantity + 1)} className="p-1.5 hover:bg-secondary text-muted-foreground hover:text-foreground transition-colors"><Plus size={14} /></button>
+                            </div>
+                            <button onClick={() => removeFromCart(item.id)} className="p-2 text-muted-foreground hover:text-destructive transition-colors ml-auto">
+                              <Trash2 size={16} />
+                            </button>
                           </div>
-                          <button onClick={() => removeFromCart(item.id)} className="p-2 text-muted-foreground hover:text-destructive transition-colors ml-auto">
-                            <Trash2 size={16} />
-                          </button>
+
                         </div>
                       </div>
-                    </div>
-                  ))
+                    );
+                  })
                 )}
               </div>
 
